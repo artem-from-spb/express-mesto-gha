@@ -1,7 +1,0 @@
-.popup__picture-xl {
-  max-height: 75vh;
-  max-width: 75vw;
-  display: block;
-  object-fit: contain;
-  object-position: center;
-}
