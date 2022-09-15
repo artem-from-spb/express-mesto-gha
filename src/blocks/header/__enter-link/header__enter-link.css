@@ -1,0 +1,13 @@
+.header__enter-link {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  color: #ffffff;
+  text-decoration: none;
+  margin: 0;
+}
+
+.header__enter-link:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
