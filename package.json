@@ -4,6 +4,7 @@
   "description": "Training project, first use of Express",
   "main": "index.js",
   "scripts": {
+    "start": "node app.js",
     "dev": "nodemon app.js",
     "lint": "npx eslint ."
   },
