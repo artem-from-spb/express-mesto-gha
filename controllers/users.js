@@ -29,14 +29,12 @@ const getUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-  const { id } = req.params;
-
-  User.findById(id)
+  User.findById(req.params.id)
     .then((user) => {
       if (user) {
-        res.send(user);
+        res.status(200).send(user);
       } else {
-        res.status(400).send({ message: "Пользователь не найден" });
+        res.status(404).send({ message: "Пользователь не найден" });
       }
     })
     .catch((err) =>
