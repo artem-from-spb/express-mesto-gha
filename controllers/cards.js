@@ -51,18 +51,21 @@ const setLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: "Карточка не найдена" });
+        throw new NotFoundError('Передан несуществующий _id карточки.');
+        //res.status(404).send({ message: "Карточка не найдена" });
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err === "ValidationError") {
-        res.status(400).send({
-          message: "Переданы некорректные данные",
-        });
-      } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      if (err === "CastError") {
+        throw new BadRequestError('Переданы некорректные данные для постановки лайка.');
+       // res.status(400).send({
+      //    message: "Переданы некорректные данные",
+       // });
       }
+      throw err;
+     //   res.status(500).send({ message: `Произошла ошибка: ${err}` });
+
     });
 };
 
@@ -74,18 +77,21 @@ const removeLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: "Карточка не найдена" });
+        throw new NotFoundError('Передан несуществующий _id карточки.');
+       // res.status(404).send({ message: "Карточка не найдена" });
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        res.status(400).send({
-          message: "Переданы некорректные данные",
-        });
-      } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      if (err.name === "CastError") {
+        throw new BadRequestError('Переданы некорректные данные для снятия лайка.');
+        // res.status(400).send({
+        //   message: "Переданы некорректные данные",
+        // });
       }
+      throw err;
+      //  res.status(500).send({ message: `Произошла ошибка: ${err}` });
+
     });
 };
 
