@@ -28,8 +28,10 @@ const getUsers = (req, res) => {
     );
 };
 
-const getUserId = (req, res) => {
-  User.findById(req.user._id)
+const getUserById = (req, res) => {
+  const { id } = req.params;
+
+  User.findById(id)
     .then((user) => {
       if (user) {
         res.send(user);
@@ -103,7 +105,7 @@ const updateAvatar = (req, res) => {
 module.exports = {
   createUser,
   getUsers,
-  getUserId,
+  getUserById,
   updateProfile,
   updateAvatar,
 };
