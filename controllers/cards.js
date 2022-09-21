@@ -6,7 +6,7 @@ const createCard = (req, res) => {
 
   Card.create({ name, link, owner: ownerId })
     .then((card) => {
-      res.send({ data: card });
+      res.send(card);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -31,8 +31,12 @@ const getCards = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findOneAndRemove(req.params.cardId)
-    .then((cards) => {
-      res.send({ data: cards });
+    .then((card) => {
+      if (card) {
+        res.send(card);
+      } else {
+        res.status(404).send({ message: "Карточка не найдена" });
+      }
     })
     .catch((err) =>
       res.status(500).send({ message: `Произошла ошибка: ${err}` })
@@ -46,11 +50,21 @@ const setLike = (req, res) => {
     { new: true }
   )
     .then((card) => {
-      res.send({ data: card });
+      if (card) {
+        res.send(card);
+      } else {
+        res.status(404).send({ message: "Карточка не найдена" });
+      }
     })
-    .catch((err) =>
-      res.status(500).send({ message: `Произошла ошибка: ${err}` })
-    );
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные",
+        });
+      } else {
+        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      }
+    });
 };
 
 const removeLike = (req, res) => {
@@ -60,11 +74,21 @@ const removeLike = (req, res) => {
     { new: true }
   )
     .then((card) => {
-      res.send({ data: card });
+      if (card) {
+        res.send(card);
+      } else {
+        res.status(404).send({ message: "Карточка не найдена" });
+      }
     })
-    .catch((err) =>
-      res.status(500).send({ message: `Произошла ошибка: ${err}` })
-    );
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные",
+        });
+      } else {
+        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      }
+    });
 };
 
 module.exports = {

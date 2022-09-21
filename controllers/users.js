@@ -5,7 +5,7 @@ const createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => {
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -21,7 +21,7 @@ const createUser = (req, res) => {
 const getUsers = (req, res) => {
   User.find({})
     .then((list) => {
-      res.send({ data: list });
+      res.send(list);
     })
     .catch((err) =>
       res.status(500).send({ message: `Произошла ошибка: ${err}` })
@@ -29,7 +29,7 @@ const getUsers = (req, res) => {
 };
 
 const getUserId = (req, res) => {
-  User.findOne({ name: "Silvester" })
+  User.findOne(req.user._id)
     .then((user) => {
       if (user) {
         res.send({ data: user._id });
@@ -54,7 +54,11 @@ const updateProfile = (req, res) => {
     }
   )
     .then((user) => {
-      res.send({ data: user });
+      if (user) {
+        res.send(user);
+      } else {
+        res.status(404).send({ message: "Пользователь не найден" });
+      }
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -79,11 +83,21 @@ const updateAvatar = (req, res) => {
     }
   )
     .then((user) => {
-      res.send({ data: user });
+      if (user) {
+        res.send(user);
+      } else {
+        res.status(404).send({ message: "Пользователь не найден" });
+      }
     })
-    .catch((err) =>
-      res.status(500).send({ message: `Произошла ошибка: ${err}` })
-    );
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(400).send({
+          message: `Переданы некорректные данные`,
+        });
+      } else {
+        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      }
+    });
 };
 
 module.exports = {
