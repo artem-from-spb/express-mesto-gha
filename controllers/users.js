@@ -29,7 +29,7 @@ const getUsers = (req, res) => {
 };
 
 const getUserId = (req, res) => {
-  User.findOne(req.user._id)
+  User.findById(req.user._id)
     .then((user) => {
       if (user) {
         res.send({ data: user._id });
