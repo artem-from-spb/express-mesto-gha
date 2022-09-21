@@ -3,21 +3,43 @@ const User = require("../models/user");
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
-  User.create({ name, about, avatar }).then((user) => {
-    res.send({ data: user });
-  });
+  User.create({ name, about, avatar })
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(400).send({
+          message: `Имя пользователя должно быть не менее 2 символов и не более 30`,
+        });
+      } else {
+        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      }
+    });
 };
 
 const getUsers = (req, res) => {
-  User.find({}).then((list) => {
-    res.send({ data: list });
-  });
+  User.find({})
+    .then((list) => {
+      res.send({ data: list });
+    })
+    .catch((err) =>
+      res.status(500).send({ message: `Произошла ошибка: ${err}` })
+    );
 };
 
 const getUserId = (req, res) => {
-  User.findOne({ name: "Тестовый пользователь" }).then((user) => {
-    res.send({ data: user._id });
-  });
+  User.findOne({ name: "Silvester" })
+    .then((user) => {
+      if (user) {
+        res.send({ data: user._id });
+      } else {
+        res.status(404).send({ message: "Пользователь не найден" });
+      }
+    })
+    .catch((err) =>
+      res.status(500).send({ message: `Произошла ошибка: ${err}` })
+    );
 };
 
 const updateProfile = (req, res) => {
@@ -30,9 +52,19 @@ const updateProfile = (req, res) => {
       new: true,
       runValidators: true,
     }
-  ).then((user) => {
-    res.send({ data: user })
-  })
+  )
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(400).send({
+          message: `Имя пользователя / работа должны быть не менее 2 символов и не более 30`,
+        });
+      } else {
+        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      }
+    });
 };
 
 const updateAvatar = (req, res) => {
@@ -45,9 +77,13 @@ const updateAvatar = (req, res) => {
       new: true,
       runValidators: true,
     }
-  ).then((user) => {
-    res.send({ data: user })
-  })
+  )
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch((err) =>
+      res.status(500).send({ message: `Произошла ошибка: ${err}` })
+    );
 };
 
 module.exports = {
