@@ -29,7 +29,7 @@ const getUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-  User.findById(req.params.id)
+  User.findById(req.params.id, { runValidators: true })
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: "Пользователь не найден" });
@@ -37,7 +37,7 @@ const getUserById = (req, res) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === "ValidationError") {
         res.status(400).send({
           message: `Имя пользователя / работа должны быть не менее 2 символов и не более 30`,
         });
