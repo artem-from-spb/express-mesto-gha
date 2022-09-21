@@ -50,11 +50,10 @@ const setLike = (req, res) => {
     { new: true, runValidators: true }
   )
     .then((card) => {
-      if (card) {
-        res.send(card);
-      } else {
+      if (!card) {
         res.status(404).send({ message: "Карточка не найдена" });
       }
+      res.send(card);
     })
     .catch((err) => {
       if (err === "ValidationError") {
@@ -74,11 +73,10 @@ const removeLike = (req, res) => {
     { new: true, runValidators: true }
   )
     .then((card) => {
-      if (card) {
-        res.send(card);
-      } else {
+      if (!card) {
         res.status(404).send({ message: "Карточка не найдена" });
       }
+      res.send(card);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
