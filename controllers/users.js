@@ -37,9 +37,15 @@ const getUserById = (req, res) => {
         res.status(404).send({ message: "Пользователь не найден" });
       }
     })
-    .catch((err) =>
-      res.status(500).send({ message: `Произошла ошибка: ${err}` })
-    );
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(400).send({
+          message: `Имя пользователя / работа должны быть не менее 2 символов и не более 30`,
+        });
+      } else {
+        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      }
+    });
 };
 
 const updateProfile = (req, res) => {
