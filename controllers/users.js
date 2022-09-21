@@ -38,7 +38,7 @@ const getUserById = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === "CastError") {
         res.status(400).send({
           message: `Имя пользователя / работа должны быть не менее 2 символов и не более 30`,
         });

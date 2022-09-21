@@ -47,7 +47,7 @@ const setLike = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true }
+    { new: true, runValidators: true }
   )
     .then((card) => {
       if (card) {
@@ -57,7 +57,7 @@ const setLike = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err === "CastError") {
+      if (err === "ValidationError") {
         res.status(400).send({
           message: "Переданы некорректные данные",
         });
@@ -71,7 +71,7 @@ const removeLike = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true }
+    { new: true, runValidators: true }
   )
     .then((card) => {
       if (card) {
@@ -81,7 +81,7 @@ const removeLike = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === "ValidationError") {
         res.status(400).send({
           message: "Переданы некорректные данные",
         });
