@@ -31,19 +31,25 @@ const getCards = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
-    .then((card) => {
-      if (!card) {
-        res.status(404).send({ message: "Карточка не найдена" });
-        return Card.findByIdAndRemove(req.params.cardId);
-      }
+    .orFail(() => {
+      res.status(404).send({ message: "Карточка не найдена" });
     })
     .then((card) => {
-      res.send({ card });
+      Card.deleteOne(card).then(() => {
+        res.send({ card });
+      });
     })
     .catch((err) => {
-      res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные",
+        });
+      } else {
+        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      }
     });
 };
+
 
 const setLike = (req, res) => {
   Card.findByIdAndUpdate(
