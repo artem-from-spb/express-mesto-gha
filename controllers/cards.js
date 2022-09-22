@@ -56,7 +56,7 @@ const setLike = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err === "ValidationError") {
+      if (err.name === "ValidationError") {
         res.status(400).send({
           message: "Переданы некорректные данные",
         });
