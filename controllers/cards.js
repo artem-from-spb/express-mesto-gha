@@ -30,22 +30,18 @@ const getCards = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findOneAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: "Карточка не найдена" });
-        return;
+        return Card.findByIdAndRemove(req.params.cardId);
       }
-      res.send(card);
+    })
+    .then((card) => {
+      res.send({ card });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        res.status(400).send({
-          message: "Переданы некорректные данные",
-        });
-      } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
-      }
+      res.status(500).send({ message: `Произошла ошибка: ${err}` });
     });
 };
 
