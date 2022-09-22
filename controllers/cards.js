@@ -52,11 +52,12 @@ const setLike = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: "Карточка не найдена" });
+        return;
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === "CastError") {
         res.status(400).send({
           message: "Переданы некорректные данные",
         });
@@ -75,11 +76,12 @@ const removeLike = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: "Карточка не найдена" });
+        return;
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === "CastError") {
         res.status(400).send({
           message: "Переданы некорректные данные",
         });
