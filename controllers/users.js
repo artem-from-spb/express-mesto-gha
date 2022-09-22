@@ -30,13 +30,17 @@ const getUsers = (req, res) => {
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
+    .orFail(() => {
+      res.status(404).send({ message: "Пользователь не найден" });
+      return;
+    })
     .then((user) => {
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(404).send({
-          message: 'Неверные данные, пользователь не найден',
+        res.status(400).send({
+          message: `Неверные данные (${err}))`,
         });
       } else {
         res.status(500).send({ message: `Произошла ошибка: ${err}` });
