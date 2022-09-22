@@ -32,15 +32,21 @@ const getCards = (req, res) => {
 const deleteCard = (req, res) => {
   Card.findOneAndRemove(req.params.cardId)
     .then((card) => {
-      if (card) {
-        res.send(card);
-      } else {
+      if (!card) {
         res.status(404).send({ message: "Карточка не найдена" });
+        return;
       }
+      res.send(card);
     })
-    .catch((err) =>
-      res.status(500).send({ message: `Произошла ошибка: ${err}` })
-    );
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные",
+        });
+      } else {
+        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+      }
+    });
 };
 
 const setLike = (req, res) => {
