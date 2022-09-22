@@ -1,31 +1,13 @@
 [![Tests for sprint 13](https://github.com/artem-from-spb/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/artem-from-spb/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests for sprint 14](https://github.com/artem-from-spb/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/artem-from-spb/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
-# Проект Mesto фронтенд + бэкенд
 
 
+Mesto Russia
 
-## Настройка бейджей статуса тестов
-Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
-Для этого замените разметку бейджей на следующий фрагмент, подставив вместо `${имя_пользователя}` и `${имя_репозитория}` соответствующие значения.
+Учебный проект.
 
-```
-[![Tests for sprint 13](https://github.com/${artem-from-spb}/${express-mesto-gha}/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/${artem-from-spb}/${express-mesto-gha}/actions/workflows/tests-13-sprint.yml) 
+Технологии: Node.js, Express, Mongo
 
-[![Tests for sprint 14](https://github.com/${имя_пользователя}/${express-mesto-gha}/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/${artem-from-spb}/${express-mesto-gha}/actions/workflows/tests-14-sprint.yml)
-```
-
-
-## Директории
-
-`/routes` — папка с файлами роутера  
-`/controllers` — папка с файлами контроллеров пользователя и карточки   
-`/models` — папка с файлами описания схем пользователя и карточки  
-  
-Остальные директории вспомогательные, создаются при необходимости разработчиком
-
-## Запуск проекта
-
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+Планы по доработке: сделать авторизацию, вынести ошибки в отдельный модуль
 
 
 https://artem-from-spb.github.io/express-mesto-gha/
