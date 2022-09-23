@@ -11,7 +11,8 @@ const createCard = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(400).send({
-          message: `Название карточки должно быть не менее 2 символов и не более 30`,
+          message:
+            "Название карточки должно быть не менее 2 символов и не более 30",
         });
       } else {
         res.status(500).send({ message: `Произошла ошибка: ${err}` });
@@ -24,9 +25,7 @@ const getCards = (req, res) => {
     .then((list) => {
       res.send(list);
     })
-    .catch((err) =>
-      res.status(500).send({ message: `Произошла ошибка: ${err}` })
-    );
+    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err}` }));
 };
 
 const deleteCard = (req, res) => {
@@ -50,12 +49,11 @@ const deleteCard = (req, res) => {
     });
 };
 
-
 const setLike = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((card) => {
       if (!card) {
@@ -79,7 +77,7 @@ const removeLike = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((card) => {
       if (!card) {

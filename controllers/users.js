@@ -10,7 +10,8 @@ const createUser = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(400).send({
-          message: `Имя пользователя должно быть не менее 2 символов и не более 30`,
+          message:
+            "Имя пользователя должно быть не менее 2 символов и не более 30",
         });
       } else {
         res.status(500).send({ message: `Произошла ошибка: ${err}` });
@@ -23,16 +24,13 @@ const getUsers = (req, res) => {
     .then((list) => {
       res.send(list);
     })
-    .catch((err) =>
-      res.status(500).send({ message: `Произошла ошибка: ${err}` })
-    );
+    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err}` }));
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(() => {
       res.status(404).send({ message: "Пользователь не найден" });
-      return;
     })
     .then((user) => {
       res.status(200).send(user);
@@ -57,7 +55,7 @@ const updateProfile = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => {
       if (user) {
@@ -69,7 +67,7 @@ const updateProfile = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(400).send({
-          message: `Имя пользователя / работа должны быть не менее 2 символов и не более 30`,
+          message: "Имя пользователя / работа должны быть не менее 2 символов и не более 30",
         });
       } else {
         res.status(500).send({ message: `Произошла ошибка: ${err}` });
@@ -86,7 +84,7 @@ const updateAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => {
       if (user) {
@@ -98,7 +96,7 @@ const updateAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(400).send({
-          message: `Переданы некорректные данные`,
+          message: "Переданы некорректные данные",
         });
       } else {
         res.status(500).send({ message: `Произошла ошибка: ${err}` });

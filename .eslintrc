@@ -1,7 +1,6 @@
 {
   "extends": "airbnb-base",
   "rules": {
-    "no-console": "off",
     "no-underscore-dangle": [
       "error",
       {
@@ -9,6 +8,10 @@
           "_id"
         ]
       }
-    ]
+    ],
+    "linebreak-style": 0,
+    "eqeqeq": "off",
+    "curly": "error",
+    "quotes": ["error", "double"],
   }
 }
