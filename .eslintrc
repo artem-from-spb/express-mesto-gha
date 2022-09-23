@@ -12,6 +12,6 @@
     "linebreak-style": 0,
     "eqeqeq": "off",
     "curly": "error",
-    "quotes": ["error", "double"],
+    "quotes": ["error", "double"]
   }
 }
