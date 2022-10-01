@@ -53,10 +53,11 @@ const deleteCard = (req, res) => {
         // });
         throw new DataError('Переданы некорректные данные')
       } else if (err.name === 'NotFoundError') {
-        res.send({ message: 'Карточка не найдена'})
+        res.send({ message: 'Карточка не найдена' })
       }
-       else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+      else {
+        throw new DataError('Произошла ошибка');
+        // res.status(500).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -69,18 +70,23 @@ const setLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: "Карточка не найдена" });
+        //res.status(404).send({ message: "Карточка не найдена" });
+        throw new Error('NotFoundError')
         return;
       }
       res.send(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
-          message: "Переданы некорректные данные",
-        });
+        throw new DataError('Переданы некорректные данные')
+        // res.status(400).send({
+        //   message: "Переданы некорректные данные",
+        // });
+      } else if (err.name === "NotFoundError") {
+        res.send({ message: 'Карточка не найдена' })
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        throw new DataError('Произошла ошибка');
+        //res.status(500).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -93,18 +99,21 @@ const removeLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: "Карточка не найдена" });
+        //  res.status(404).send({ message: "Карточка не найдена" });
+        throw new Error('NotFoundError')
         return;
       }
       res.send(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
-          message: "Переданы некорректные данные",
-        });
+        // res.status(400).send({
+        //   message: "Переданы некорректные данные",
+        // });
+        throw new DataError('Переданы некорректные данные')
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        //  res.status(500).send({ message: 'Произошла ошибка' });
+        throw new DataError('Произошла ошибка');
       }
     });
 };
