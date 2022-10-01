@@ -1,4 +1,7 @@
 const Card = require("../models/card");
+const DataError = require('../errors/DataError');
+const DefaultError = require('../errors/DefaultError');
+const NotFoundError = require('../errors/NotFoundError');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -10,12 +13,14 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({
-          message:
-            "Название карточки должно быть не менее 2 символов и не более 30",
-        });
+        // res.status(400).send({
+        //   message:
+        //     "Название карточки должно быть не менее 2 символов и не более 30",
+        // });
+        throw new DataError('Название карточки должно быть не менее 2 символов и не более 30')
       } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+        //  res.status(500).send({ message: 'Произошла ошибка' });
+        throw new DefaultError('Произошла ошибка');
       }
     });
 };
@@ -25,13 +30,16 @@ const getCards = (req, res) => {
     .then((list) => {
       res.send(list);
     })
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err}` }));
+    .catch((err) => { throw new DataError('Произошла ошибка'); }
+      //res.status(500).send({ message: 'Произошла ошибка' })
+    );
 };
 
 const deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
     .orFail(() => {
-      res.status(404).send({ message: "Карточка не найдена" });
+      throw new Error('NotFoundError')
+      //res.status(404).send({ message: "Карточка не найдена" });
     })
     .then((card) => {
       Card.deleteOne(card).then(() => {
@@ -40,11 +48,15 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
-          message: "Переданы некорректные данные",
-        });
-      } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+        // res.status(400).send({
+        //   message: "Переданы некорректные данные",
+        // });
+        throw new DataError('Переданы некорректные данные')
+      } else if (err.name === 'NotFoundError') {
+        res.send({ message: 'Карточка не найдена'})
+      }
+       else {
+        res.status(500).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -68,7 +80,7 @@ const setLike = (req, res) => {
           message: "Переданы некорректные данные",
         });
       } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+        res.status(500).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -92,7 +104,7 @@ const removeLike = (req, res) => {
           message: "Переданы некорректные данные",
         });
       } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+        res.status(500).send({ message: 'Произошла ошибка' });
       }
     });
 };
