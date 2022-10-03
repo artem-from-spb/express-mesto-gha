@@ -93,20 +93,18 @@ const removeLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-         res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
+        res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
         return;
       }
       res.send(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        // res.status(400).send({
-        //   message: "Переданы некорректные данные",
-        // });
-        throw new DataError('Переданы некорректные данные')
+        res.status(ValidationErrorStatus).send({
+          message: "Переданы некорректные данные",
+        });
       } else {
-        //  res.status(500).send({ message: 'Произошла ошибка' });
-        throw new DataError('Произошла ошибка');
+        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
       }
     });
 };
