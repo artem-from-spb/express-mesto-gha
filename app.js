@@ -29,4 +29,6 @@ app.use("*", (req, res) => {
   res.status(404).send({ message: "Ошибка 404" });
 });
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(PORT);
+});

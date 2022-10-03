@@ -13,14 +13,14 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        // res.status(400).send({
-        //   message:
-        //     "Название карточки должно быть не менее 2 символов и не более 30",
-        // });
-        throw new DataError('Название карточки должно быть не менее 2 символов и не более 30')
+        res.status(400).send({
+          message:
+            "Название карточки должно быть не менее 2 символов и не более 30",
+        });
+        //   throw new DataError('Название карточки должно быть не менее 2 символов и не более 30')
       } else {
-        //  res.status(500).send({ message: 'Произошла ошибка' });
-        throw new DefaultError('Произошла ошибка');
+        res.status(500).send({ message: 'Произошла ошибка' });
+        //     throw new DefaultError('Произошла ошибка');
       }
     });
 };
