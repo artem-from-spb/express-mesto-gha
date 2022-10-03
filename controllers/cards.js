@@ -1,8 +1,6 @@
 const Card = require("../models/card");
-const DataError = require('../errors/DataError');
-const DefaultError = require('../errors/DefaultError');
-const NotFoundError = require('../errors/NotFoundError');
-const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require('../errors/ErrorCodes');
+const DataError = require("../errors/DataError");
+const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -19,7 +17,7 @@ const createCard = (req, res) => {
             "Название карточки должно быть не менее 2 символов и не более 30",
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
+        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -29,9 +27,7 @@ const getCards = (req, res) => {
     .then((list) => {
       res.send(list);
     })
-    .catch((err) => { throw new DataError('Произошла ошибка'); }
-      //res.status(500).send({ message: 'Произошла ошибка' })
-    );
+    .catch(() => { throw new DataError("Произошла ошибка"); });
 };
 
 const deleteCard = (req, res) => {
@@ -49,11 +45,10 @@ const deleteCard = (req, res) => {
         res.status(ValidationErrorStatus).send({
           message: "Переданы некорректные данные",
         });
-      } else if (err.name === 'NotFoundError') {
-        res.send({ message: 'Карточка не найдена' })
-      }
-      else {
-        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
+      } else if (err.name === "NotFoundError") {
+        res.send({ message: "Карточка не найдена" });
+      } else {
+        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -77,7 +72,7 @@ const setLike = (req, res) => {
           message: "Переданы некорректные данные",
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
+        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -101,7 +96,7 @@ const removeLike = (req, res) => {
           message: "Переданы некорректные данные",
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
+        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
       }
     });
 };

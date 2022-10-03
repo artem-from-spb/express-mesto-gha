@@ -14,7 +14,7 @@ const createUser = (req, res) => {
             "Имя пользователя должно быть не менее 2 символов и не более 30",
         });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(500).send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -41,7 +41,7 @@ const getUserById = (req, res) => {
           message: `Неверные данные (${err}))`,
         });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(500).send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -70,7 +70,7 @@ const updateProfile = (req, res) => {
           message: "Имя пользователя / работа должны быть не менее 2 символов и не более 30",
         });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(500).send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -99,7 +99,7 @@ const updateAvatar = (req, res) => {
           message: "Переданы некорректные данные",
         });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(500).send({ message: "Произошла ошибка" });
       }
     });
 };
