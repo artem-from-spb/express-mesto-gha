@@ -37,8 +37,7 @@ const getCards = (req, res) => {
 const deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
     .orFail(() => {
-      throw new Error('NotFoundError')
-      //res.status(404).send({ message: "Карточка не найдена" });
+      res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
     })
     .then((card) => {
       Card.deleteOne(card).then(() => {
@@ -47,16 +46,14 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        // res.status(400).send({
-        //   message: "Переданы некорректные данные",
-        // });
-        throw new DataError('Переданы некорректные данные')
+        res.status(ValidationErrorStatus).send({
+          message: "Переданы некорректные данные",
+        });
       } else if (err.name === 'NotFoundError') {
         res.send({ message: 'Карточка не найдена' })
       }
       else {
-        throw new DataError('Произошла ошибка');
-        // res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
       }
     });
 };
