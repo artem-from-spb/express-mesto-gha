@@ -71,8 +71,7 @@ const setLike = (req, res) => {
     .then((card) => {
       if (!card) {
         //res.status(404).send({ message: "Карточка не найдена" });
-        throw new Error('NotFoundError')
-        return;
+        throw new NotFoundError;
       }
       res.send(card);
     })
