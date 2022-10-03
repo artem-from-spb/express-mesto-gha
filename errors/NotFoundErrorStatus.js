@@ -1,1 +1,0 @@
-module.exports.NotFoundErrorStatus = 404;

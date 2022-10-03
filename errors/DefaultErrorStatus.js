@@ -1,1 +1,0 @@
-module.exports.DefaultErrorStatus = 500;

@@ -2,9 +2,7 @@ const Card = require("../models/card");
 const DataError = require('../errors/DataError');
 const DefaultError = require('../errors/DefaultError');
 const NotFoundError = require('../errors/NotFoundError');
-const ValidationErrorStatus = require('../errors/ValidationErrorStatus');
-const DefaultErrorStatus = require('../errors/DefaultErrorStatus');
-const NotFoundErrorStatus = require('../errors/NotFoundErrorStatus');
+const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require('../errors/ErrorCodes');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -16,12 +14,12 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(ValidationErrorStatus).send({
+        res.status(400).send({
           message:
             "Название карточки должно быть не менее 2 символов и не более 30",
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
+        res.status(500).send({ message: 'Произошла ошибка' });
       }
     });
 };
