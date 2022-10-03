@@ -93,8 +93,7 @@ const removeLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        //  res.status(404).send({ message: "Карточка не найдена" });
-        throw new Error('NotFoundError')
+         res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
         return;
       }
       res.send(card);
