@@ -2,6 +2,9 @@ const Card = require("../models/card");
 const DataError = require('../errors/DataError');
 const DefaultError = require('../errors/DefaultError');
 const NotFoundError = require('../errors/NotFoundError');
+const ValidationErrorStatus = require('../errors/ValidationErrorStatus');
+const DefaultErrorStatus = require('../errors/DefaultErrorStatus');
+const NotFoundErrorStatus = require('../errors/NotFoundErrorStatus');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -13,14 +16,12 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({
+        res.status(ValidationErrorStatus).send({
           message:
             "Название карточки должно быть не менее 2 символов и не более 30",
         });
-        //   throw new DataError('Название карточки должно быть не менее 2 символов и не более 30')
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
-        //     throw new DefaultError('Произошла ошибка');
+        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -70,22 +71,18 @@ const setLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        //res.status(404).send({ message: "Карточка не найдена" });
-        throw new NotFoundError;
+        res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
+        return;
       }
       res.send(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        throw new DataError('Переданы некорректные данные')
-        // res.status(400).send({
-        //   message: "Переданы некорректные данные",
-        // });
-      } else if (err.name === "NotFoundError") {
-        res.send({ message: 'Карточка не найдена' })
+        res.status(ValidationErrorStatus).send({
+          message: "Переданы некорректные данные",
+        });
       } else {
-        throw new DataError('Произошла ошибка');
-        //res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
       }
     });
 };
