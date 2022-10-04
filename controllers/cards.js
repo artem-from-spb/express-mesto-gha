@@ -1,5 +1,5 @@
 const Card = require("../models/card");
-const NotFoundError = require("../errors/NotFoundError");
+const { NotFoundError } = require("../errors/NotFoundError");
 const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
 
 const createCard = (req, res) => {
