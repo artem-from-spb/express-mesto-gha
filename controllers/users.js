@@ -1,5 +1,7 @@
 const User = require("../models/user");
 
+const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
+
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
@@ -9,12 +11,12 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({
+        res.status(ValidationErrorStatus).send({
           message:
             "Имя пользователя должно быть не менее 2 символов и не более 30",
         });
       } else {
-        res.status(500).send({ message: "Произошла ошибка" });
+        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -30,7 +32,7 @@ const getUsers = (req, res) => {
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(() => {
-      res.status(404).send({ message: "Пользователь не найден" });
+      res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
     })
     .then((user) => {
       res.status(200).send(user);

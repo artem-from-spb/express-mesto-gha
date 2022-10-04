@@ -1,5 +1,4 @@
 const Card = require("../models/card");
-const { NotFoundError } = require("../errors/NotFoundError");
 const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
 
 const createCard = (req, res) => {
@@ -34,7 +33,13 @@ const getCards = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
-    .orFail(() => new NotFoundError("Такой карточки не существует"))
+    .then((card) => {
+      if (!card) {
+        res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
+        return;
+      }
+      res.send(card);
+    })
     .then((card) => {
       Card.deleteOne(card).then(() => {
         res.send({ card });
@@ -45,8 +50,6 @@ const deleteCard = (req, res) => {
         res.status(ValidationErrorStatus).send({
           message: "Переданы некорректные данные",
         });
-      } else if (err.statusCode === 404) {
-        res.send({ message: "Карточка не найдена" });
       } else {
         res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
       }
