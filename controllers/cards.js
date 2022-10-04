@@ -1,5 +1,5 @@
 const Card = require("../models/card");
-const DataError = require("../errors/DataError");
+const NotFoundError = require("../errors/NotFoundError");
 const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
 
 const createCard = (req, res) => {
@@ -14,7 +14,7 @@ const createCard = (req, res) => {
       if (err.name === "ValidationError") {
         res.status(ValidationErrorStatus).send({
           message:
-            "Название карточки должно быть не менее 2 символов и не более 30",
+            "Переданы некорректные данные",
         });
       } else {
         res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
@@ -27,14 +27,14 @@ const getCards = (req, res) => {
     .then((list) => {
       res.send(list);
     })
-    .catch(() => { throw new DataError("Произошла ошибка"); });
+    .catch(() => {
+      res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+    });
 };
 
 const deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
-    .orFail(() => {
-      res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
-    })
+    .orFail(() => new NotFoundError("Такой карточки не существует"))
     .then((card) => {
       Card.deleteOne(card).then(() => {
         res.send({ card });
@@ -45,7 +45,7 @@ const deleteCard = (req, res) => {
         res.status(ValidationErrorStatus).send({
           message: "Переданы некорректные данные",
         });
-      } else if (err.name === "NotFoundError") {
+      } else if (err.statusCode === 404) {
         res.send({ message: "Карточка не найдена" });
       } else {
         res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
