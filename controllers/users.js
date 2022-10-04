@@ -1,5 +1,4 @@
 const User = require("../models/user");
-
 const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
 
 const createUser = (req, res) => {
@@ -26,24 +25,28 @@ const getUsers = (req, res) => {
     .then((list) => {
       res.send(list);
     })
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err}` }));
+    .catch((err) => res.status(DefaultErrorStatus).send({ message: `Произошла ошибка: ${err}` }));
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(() => {
-      res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
+    .then((user) => {
+      if (!user) {
+        res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
+        return;
+      }
+      res.send(user);
     })
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({
-          message: `Неверные данные (${err}))`,
+        res.status(ValidationErrorStatus).send({
+          message: "Неверные данные",
         });
       } else {
-        res.status(500).send({ message: "Произошла ошибка" });
+        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -63,16 +66,16 @@ const updateProfile = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: "Пользователь не найден" });
+        res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
       }
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({
+        res.status(ValidationErrorStatus).send({
           message: "Имя пользователя / работа должны быть не менее 2 символов и не более 30",
         });
       } else {
-        res.status(500).send({ message: "Произошла ошибка" });
+        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -92,16 +95,16 @@ const updateAvatar = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: "Пользователь не найден" });
+        res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
       }
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({
+        res.status(ValidationErrorStatus).send({
           message: "Переданы некорректные данные",
         });
       } else {
-        res.status(500).send({ message: "Произошла ошибка" });
+        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
       }
     });
 };
