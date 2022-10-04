@@ -37,9 +37,6 @@ const getUserById = (req, res) => {
       }
       res.send(user);
     })
-    .then((user) => {
-      res.status(200).send(user);
-    })
     .catch((err) => {
       if (err.name === "CastError") {
         res.status(ValidationErrorStatus).send({
