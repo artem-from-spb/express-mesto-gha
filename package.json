@@ -22,8 +22,7 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "nodemon": "^2.0.19",
-    "webpack": "^5.74.0"
+    "nodemon": "^2.0.19"
   },
   "dependencies": {
     "body-parser": "^1.20.0",
