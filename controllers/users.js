@@ -1,12 +1,20 @@
 const User = require("../models/user");
 const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
+const bcrypt = require("bcryptjs");
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
-  User.create({ name, about, avatar })
+  User.findOne({ email })
     .then((user) => {
-      res.send(user);
+      if (user) {
+        throw new Error('')
+        //СДЕЛАТЬ ОШИЬКУ/////////////////////////////////////
+      }
+      return bcrypt.hash(password, 10)
+        .then((hash) => User.create({ name, about, avatar, email, password: hash, })
+        ).then((user) => User.findOne({ _id: user._id }))
+        .then((user) => res.send(user));
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -106,10 +114,42 @@ const updateAvatar = (req, res) => {
     });
 };
 
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email })
+    .select('+password')
+    .then((user) => {
+      if (!user) {
+        ///////////////////////////////////////////
+        throw new AuthError('Пользователь с таки email не загеристрирован');
+      }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            // хеши не совпали — отклоняем промис
+            throw new AuthError('Неверный email или пароль');
+          }
+          // аутентификация успешна
+          const token = jwt.sign({ _id: user._id }, 'login-secret-key', {
+            expiresIn: '7d',
+          });
+          res.status(200).send({ token });
+        });
+    })
+    .catch(next);
+};
+
+const getUserMe = (req, res) => {
+
+}
+
 module.exports = {
   createUser,
   getUsers,
   getUserById,
   updateProfile,
   updateAvatar,
+  login,
+  getUserMe
 };
