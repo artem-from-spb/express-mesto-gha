@@ -56,6 +56,26 @@ const getUserById = (req, res) => {
     });
 };
 
+const getUserMe = (req, res) => {
+User.findById(req.user._id)
+.then((user) => {
+  if (!user) {
+    res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
+    return;
+  }
+  res.send(user);
+})
+.catch((err) => {
+  if (err.name === "CastError") {
+    res.status(ValidationErrorStatus).send({
+      message: "Неверные данные",
+    });
+  } else {
+    res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+  }
+});
+}
+
 const updateProfile = (req, res) => {
   const { name, about } = req.body;
 
@@ -140,9 +160,7 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
-const getUserMe = (req, res) => {
 
-}
 
 module.exports = {
   createUser,
