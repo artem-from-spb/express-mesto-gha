@@ -1,5 +1,12 @@
 const User = require("../models/user");
-const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus, ErrorConflict, UnauthorizedError } = require("../errors/ErrorCodes");
+const {
+  DefaultErrorStatus,
+  NotFoundErrorStatus,
+  ValidationErrorStatus,
+  ErrorConflict,
+  UnauthorizedError
+} = require("../errors/ErrorCodes");
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
