@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
+const auth = require("./middlewares/auth");
 
 const { createUser, login } = require("./controllers/users");
 
@@ -16,22 +17,16 @@ mongoose.connect("mongodb://localhost:27017/mestodb");
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "632823b7869e50e118ba06a8",
-  };
+app.post('/signin', login);
+app.post('/signup', createUser);
 
-  next();
-});
+app.use(auth);
 
 app.use("/users", routerUsers);
 app.use("/cards", routerCards);
-
-app.post('/signin', login);
-app.post('/signup', createUser);
 
 app.use("*", (req, res) => {
   res.status(404).send({ message: "Ошибка 404" });
 });
 
-app.listen(PORT);
+app.listen(console.log(PORT));

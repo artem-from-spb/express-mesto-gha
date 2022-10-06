@@ -1,6 +1,7 @@
 const User = require("../models/user");
-const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
+const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus, ErrorConflict, UnauthorizedError } = require("../errors/ErrorCodes");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
@@ -8,12 +9,11 @@ const createUser = (req, res) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        throw new Error('')
-        //СДЕЛАТЬ ОШИЬКУ/////////////////////////////////////
+        throw new ErrorConflict('Этот email уже используется')
       }
       return bcrypt.hash(password, 10)
-        .then((hash) => User.create({ name, about, avatar, email, password: hash, })
-        ).then((user) => User.findOne({ _id: user._id }))
+        .then((hash) => User.create({ name, about, avatar, email, password: hash, }))
+        .then((user) => User.findOne({ _id: user._id }))
         .then((user) => res.send(user));
     })
     .catch((err) => {
@@ -57,23 +57,23 @@ const getUserById = (req, res) => {
 };
 
 const getUserMe = (req, res) => {
-User.findById(req.user._id)
-.then((user) => {
-  if (!user) {
-    res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
-    return;
-  }
-  res.send(user);
-})
-.catch((err) => {
-  if (err.name === "CastError") {
-    res.status(ValidationErrorStatus).send({
-      message: "Неверные данные",
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
+        return;
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res.status(ValidationErrorStatus).send({
+          message: "Неверные данные",
+        });
+      } else {
+        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+      }
     });
-  } else {
-    res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
-  }
-});
 }
 
 const updateProfile = (req, res) => {
