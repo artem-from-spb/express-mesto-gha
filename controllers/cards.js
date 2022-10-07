@@ -2,10 +2,7 @@ const Card = require("../models/card");
 const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
 
 const DataError = require("../errors/DataError");
-const DefaultError = require("../errors/DefaultError");
-const ErrorConflict = require("../errors/ErrorConflict");
 const NotFoundError = require("../errors/NotFoundError");
-const UnauthorizedError = require("../errors/UnauthorizedError");
 const ForbiddenError = require("../errors/ForbiddenError");
 
 const createCard = (req, res, next) => {
@@ -14,7 +11,7 @@ const createCard = (req, res, next) => {
 
   Card.create({ name, link, owner: ownerId })
     .catch(() => {
-      throw new DataError({ message: 'Указаны некорректные данные' });
+      throw new DataError({ message: "Указаны некорректные данные" });
     })
     .then((card) => {
       res.send(card);
@@ -34,17 +31,17 @@ const getCards = (req, res) => {
 
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
-  .orFail()
-  .catch(() => {
-    throw new NotFoundError('Нет карточки с таким id');
-  })
+    .orFail()
+    .catch(() => {
+      throw new NotFoundError("Нет карточки с таким id");
+    })
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
-        throw new ForbiddenError("Недостаточно прав для удаления карточки")
+        throw new ForbiddenError("Недостаточно прав для удаления карточки");
       }
       Card.deleteOne(card).then(() => {
         res.send({ card })
-        .catch(next);
+          .catch(next);
       });
     })
     .catch(next);
