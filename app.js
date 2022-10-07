@@ -11,6 +11,10 @@ const NotFoundError = require("./errors/NotFoundError");
 
 const cookieParser = require("cookie-parser");
 
+const { requestLogger,
+  errorLogger, } = require("./middlewares/logger")
+
+
 //////////////////
 require('dotenv').config();
 const { PORT = 3000 } = process.env;
@@ -25,6 +29,12 @@ app.use(express.json());
 // Mongoose 6 always behaves as if useNewUrlParser
 // and useCreateIndex are true, and useFindAndModify is false.
 mongoose.connect("mongodb://localhost:27017/mestodb");
+
+
+app.use(requestLogger);
+
+
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -54,9 +64,17 @@ app.use(errors());
 app.use("/users", routerUsers);
 app.use("/cards", routerCards);
 
-// app.use("*", (req, res) => {
-//   res.status(NotFoundErrorStatus).send({ message: "Ошибка 404" });
-// });
+
+
+
+app.use(() => {
+  throw new NotFoundError({ message: 'Запрашиваемый ресурс не найден' });
+});
+
+app.use(errorLogger);
+
+
+
 
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500

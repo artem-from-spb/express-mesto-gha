@@ -1,9 +1,4 @@
 const User = require("../models/user");
-const {
-  DefaultErrorStatus,
-  NotFoundErrorStatus,
-  ValidationErrorStatus
-} = require("../errors/ErrorCodes");
 
 const DataError = require("../errors/DataError");
 const DefaultError = require("../errors/DefaultError");
