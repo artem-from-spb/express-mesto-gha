@@ -90,11 +90,10 @@ const updateProfile = (req, res, next) => {
     },
   )
     .then((user) => {
-      if (user) {
-        res.send(user);
-      } else {
+      if (!user) {
         throw new NotFoundError("Пользователь не найден");
       }
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -117,11 +116,10 @@ const updateAvatar = (req, res, next) => {
     },
   )
     .then((user) => {
-      if (user) {
-        res.send(user);
-      } else {
+      if (!user) {
         throw new NotFoundError("Пользователь не найден");
       }
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -149,7 +147,7 @@ const login = (req, res, next) => {
             throw new AuthError('Неверный email или пароль');
           }
           // аутентификация успешна
-          const token = jwt.sign({ _id: user._id }, 'login-secret-key', {
+          const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
             expiresIn: '7d',
           });
           res.status(200).send({ token });
