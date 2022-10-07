@@ -29,7 +29,7 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new DataError('Неверныt данные'));
+        next(new DataError('Неверные данные'));
       } else {
         next(err);
       }
@@ -54,9 +54,7 @@ const getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(ValidationErrorStatus).send({
-          message: "Неверные данные",
-        });
+        next(new DataError('Неверные данные'));
       } else {
         next(err)
       }
@@ -73,9 +71,7 @@ const getUserMe = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(ValidationErrorStatus).send({
-          message: "Неверные данные",
-        });
+        next(new DataError('Неверные данные'));
       } else {
         next(err);
       }
@@ -102,9 +98,7 @@ const updateProfile = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(ValidationErrorStatus).send({
-          message: "Имя пользователя / работа должны быть не менее 2 символов и не более 30",
-        });
+        next(new DataError('Неверные данные'));
       } else {
         next(err);
       }
@@ -131,9 +125,7 @@ const updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(ValidationErrorStatus).send({
-          message: "Переданы некорректные данные",
-        });
+        next(new DataError('Неверные данные'));
       } else {
         next(err);
       }
