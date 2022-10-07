@@ -9,6 +9,8 @@ const auth = require("./middlewares/auth");
 const { createUser, login } = require("./controllers/users");
 const NotFoundErrorStatus = require("./errors/NotFoundError");
 
+//////////////////
+require('dotenv').config();
 const { PORT = 3000 } = process.env;
 
 const app = express();
@@ -38,6 +40,9 @@ app.post('/signup', celebrate({
     password: Joi.string().required(),
   })
 }), createUser);
+
+//////////
+app.use(express.json());
 
 app.use(auth);
 app.use(errors());
