@@ -6,6 +6,7 @@ const DefaultError = require("../errors/DefaultError");
 const ErrorConflict = require("../errors/ErrorConflict");
 const NotFoundError = require("../errors/NotFoundError");
 const UnauthorizedError = require("../errors/UnauthorizedError");
+const ForbiddenError = require("../errors/ForbiddenError");
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -33,12 +34,16 @@ const getCards = (req, res) => {
 
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
+  .catch(() => {
+    throw new NotFoundError('Нет карточки с таким id');
+  })
     .then((card) => {
-      if (!card) {
-        throw new NotFoundError({ message: 'Нет карточки с таким id' });
+      if (card.owner.toString() !== req.user._id) {
+        throw new ForbiddenError("Недостаточно прав для удаления карточки")
       }
       Card.deleteOne(card).then(() => {
-        res.send({ card });
+        res.send({ card })
+        .catch(next);
       });
     })
     .catch(next);
