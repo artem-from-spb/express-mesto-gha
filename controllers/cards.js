@@ -61,7 +61,15 @@ const setLike = (req, res) => {
       }
       res.send(card);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res.status(ValidationErrorStatus).send({
+          message: "Переданы некорректные данные",
+        });
+      } else {
+        next(err);
+      }
+    });
 };
 
 const removeLike = (req, res) => {
@@ -72,8 +80,7 @@ const removeLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
-        return;
+        throw new NotFoundError({ message: 'Нет карточки с таким id' });
       }
       res.send(card);
     })
@@ -83,7 +90,7 @@ const removeLike = (req, res) => {
           message: "Переданы некорректные данные",
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+        next(err);
       }
     });
 };
