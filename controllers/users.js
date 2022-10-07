@@ -21,7 +21,13 @@ const createUser = (req, res, next) => {
         .then((user) => User.findOne({ _id: user._id }))
         .then((user) => res.send(user));
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        next(new DataError('Неверные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const getUsers = (req, res, next) => {
