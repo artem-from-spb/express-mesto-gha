@@ -56,9 +56,9 @@ app.use(errors());
 app.use("/users", routerUsers);
 app.use("/cards", routerCards);
 
-app.use("*", (req, res) => {
-  res.status(NotFoundErrorStatus).send({ message: "Ошибка 404" });
-});
+// app.use("*", (req, res) => {
+//   res.status(NotFoundErrorStatus).send({ message: "Ошибка 404" });
+// });
 
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
