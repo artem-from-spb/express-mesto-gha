@@ -11,8 +11,7 @@ const NotFoundError = require("./errors/NotFoundError");
 
 const cookieParser = require("cookie-parser");
 
-const { requestLogger,
-  errorLogger, } = require("./middlewares/logger")
+//const { requestLogger, errorLogger } = require("./middlewares/logger")
 
 
 //////////////////
@@ -31,7 +30,7 @@ app.use(express.json());
 mongoose.connect("mongodb://localhost:27017/mestodb");
 
 
-app.use(requestLogger);
+//app.use(requestLogger);
 
 
 
@@ -71,7 +70,7 @@ app.use(() => {
   throw new NotFoundError({ message: 'Запрашиваемый ресурс не найден' });
 });
 
-app.use(errorLogger);
+//app.use(errorLogger);
 
 
 
