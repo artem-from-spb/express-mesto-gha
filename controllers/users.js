@@ -1,7 +1,6 @@
 const User = require("../models/user");
 
 const DataError = require("../errors/DataError");
-const DefaultError = require("../errors/DefaultError");
 const ErrorConflict = require("../errors/ErrorConflict");
 const NotFoundError = require("../errors/NotFoundError");
 const UnauthorizedError = require("../errors/UnauthorizedError");
@@ -22,13 +21,7 @@ const createUser = (req, res, next) => {
         .then((user) => User.findOne({ _id: user._id }))
         .then((user) => res.send(user));
     })
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        next(new DataError('Неверные данные'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const getUsers = (req, res, next) => {
