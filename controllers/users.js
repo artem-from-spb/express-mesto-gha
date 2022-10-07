@@ -2,15 +2,19 @@ const User = require("../models/user");
 const {
   DefaultErrorStatus,
   NotFoundErrorStatus,
-  ValidationErrorStatus,
-  ErrorConflict,
-  UnauthorizedError
+  ValidationErrorStatus
 } = require("../errors/ErrorCodes");
+
+const DataError = require("../errors/DataError");
+const DefaultError = require("../errors/DefaultError");
+const ErrorConflict = require("../errors/ErrorConflict");
+const NotFoundError = require("../errors/NotFoundError");
+const UnauthorizedError = require("../errors/UnauthorizedError");
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
 
   User.findOne({ email })
@@ -25,30 +29,26 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(ValidationErrorStatus).send({
-          message:
-            "Имя пользователя должно быть не менее 2 символов и не более 30",
-        });
+        next(new DataError('Неверныt данные'));
       } else {
-        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+        next(err);
       }
     });
 };
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((list) => {
       res.send(list);
     })
-    .catch((err) => res.status(DefaultErrorStatus).send({ message: `Произошла ошибка: ${err}` }));
+    .catch(next);
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
-        return;
+        throw new NotFoundError("Пользователь не найден");
       }
       res.send(user);
     })
@@ -58,17 +58,16 @@ const getUserById = (req, res) => {
           message: "Неверные данные",
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+        next(err)
       }
     });
 };
 
-const getUserMe = (req, res) => {
+const getUserMe = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
-        return;
+        throw new NotFoundError("Пользователь не найден");
       }
       res.send(user);
     })
@@ -78,12 +77,12 @@ const getUserMe = (req, res) => {
           message: "Неверные данные",
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+        next(err);
       }
     });
 }
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -98,7 +97,7 @@ const updateProfile = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
+        throw new NotFoundError("Пользователь не найден");
       }
     })
     .catch((err) => {
@@ -107,12 +106,12 @@ const updateProfile = (req, res) => {
           message: "Имя пользователя / работа должны быть не менее 2 символов и не более 30",
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+        next(err);
       }
     });
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -127,7 +126,7 @@ const updateAvatar = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(NotFoundErrorStatus).send({ message: "Пользователь не найден" });
+        throw new NotFoundError("Пользователь не найден");
       }
     })
     .catch((err) => {
@@ -136,7 +135,7 @@ const updateAvatar = (req, res) => {
           message: "Переданы некорректные данные",
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+        next(err);
       }
     });
 };
