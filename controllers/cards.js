@@ -34,16 +34,16 @@ const getCards = (req, res) => {
 
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
-  .catch(() => {
-    throw new NotFoundError('Нет карточки с таким id');
-  })
+    .catch(() => {
+      throw new NotFoundError('Нет карточки с таким id');
+    })
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError("Недостаточно прав для удаления карточки")
       }
       Card.deleteOne(card).then(() => {
         res.send({ card })
-        .catch(next);
+          .catch(next);
       });
     })
     .catch(next);
@@ -57,20 +57,11 @@ const setLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
-        return;
+        throw new NotFoundError({ message: 'Нет карточки с таким id' });
       }
       res.send(card);
     })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        res.status(ValidationErrorStatus).send({
-          message: "Переданы некорректные данные",
-        });
-      } else {
-        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
-      }
-    });
+    .catch(next);
 };
 
 const removeLike = (req, res) => {
