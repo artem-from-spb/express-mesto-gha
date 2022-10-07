@@ -33,7 +33,7 @@ const getCards = (req, res) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findById(req.params._id)
+  Card.findById(req.params.cardId)
   .orFail()
   .catch(() => {
     throw new NotFoundError('Нет карточки с таким id');
@@ -52,7 +52,7 @@ const deleteCard = (req, res, next) => {
 
 const setLike = (req, res) => {
   Card.findByIdAndUpdate(
-    req.params._id,
+    req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true, runValidators: true },
   )
@@ -76,7 +76,7 @@ const setLike = (req, res) => {
 
 const removeLike = (req, res) => {
   Card.findByIdAndUpdate(
-    req.params._id,
+    req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true, runValidators: true },
   )

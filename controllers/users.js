@@ -11,23 +11,39 @@ const jwt = require("jsonwebtoken");
 const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
 
-  User.findOne({ email })
-    .then((user) => {
-      if (user) {
-        throw new ErrorConflict('Этот email уже используется')
-      }
-      return bcrypt.hash(password, 10)
-        .then((hash) => User.create({ name, about, avatar, email, password: hash, }))
-        .then((user) => User.findOne({ _id: user._id }))
-        .then((user) => res.send(user));
-    })
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        next(new DataError('Неверные данные'));
-      } else {
-        next(err);
-      }
-    });
+      if (err.name === 'MongoError' || err.code === 11000) {
+        throw new ConflictError({ message: 'Пользователь с таким email уже зарегистрирован' });
+      } else next(err);
+    })
+    .then((user) => res.status(201).send({
+      data: {
+        name: user.name, about: user.about, avatar, email: user.email,
+      },
+    }))
+    .catch(next);
+
+  // User.findOne({ email })
+  //   .then((user) => {
+  //     if (user) {
+  //       throw new ErrorConflict('Этот email уже используется');
+  //     }
+  //     return bcrypt.hash(password, 10)
+  //       .then((hash) => User.create({ name, about, avatar, email, password: hash, }))
+  //       .then((user) => User.findOne({ _id: user._id }))
+  //       .then((user) => res.send(user));
+  //   })
+  //   .catch((err) => {
+  //     if (err.name === "ValidationError") {
+  //       next(new DataError('Неверные данные'));
+  //     } else {
+  //       next(err);
+  //     }
+  //   });
 };
 
 const getUsers = (req, res, next) => {
