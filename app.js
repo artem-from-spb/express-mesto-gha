@@ -10,7 +10,7 @@ const { createUser, login } = require("./controllers/users");
 const NotFoundErrorStatus = require("./errors/NotFoundError");
 
 //////////////////
-require('dotenv').config();
+//require('dotenv').config();
 const { PORT = 3000 } = process.env;
 
 const app = express();
@@ -21,6 +21,12 @@ mongoose.connect("mongodb://localhost:27017/mestodb");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+/////////
+app.use((req, res, next) => {
+  console.log(req.method, req.path);
+  next();
+});
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
