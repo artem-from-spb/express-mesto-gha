@@ -149,35 +149,56 @@ const updateAvatar = (req, res, next) => {
     });
 };
 
+// const login = (req, res, next) => {
+//   const { email, password } = req.body;
+
+//   User.findOne({ email })
+//     .select("+password")
+//     .then((user) => {
+//       if (!user) {
+//         throw new UnauthorizedError("Пользователь с таки email не загеристрирован");
+//       }
+//       return bcrypt.compare(password, user.password)
+//         .then((matched) => {
+//           if (!matched) {
+//             // хеши не совпали — отклоняем промис
+//             throw new UnauthorizedError("Неверный email или пароль");
+//           }
+//           // аутентификация успешна
+//           const token = jwt.sign({ _id: user._id }, "some-secret-key", {
+//             expiresIn: "7d",
+//           });
+//           res.status(200).send({ token });
+//         });
+//     })
+//     .catch((err) => {
+//       if (err.name === "ValidationError") {
+//         next(new DataError("Неверные данные"));
+//       } else {
+//         next(err);
+//       }
+//     });
+// };
+
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findOne({ email })
-    .select("+password")
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        throw new UnauthorizedError("Пользователь с таки email не загеристрирован");
-      }
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            // хеши не совпали — отклоняем промис
-            throw new UnauthorizedError("Неверный email или пароль");
-          }
-          // аутентификация успешна
-          const token = jwt.sign({ _id: user._id }, "some-secret-key", {
-            expiresIn: "7d",
-          });
-          res.status(200).send({ token });
-        });
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
+      );
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+          sameSite: true,
+        })
+        .send({ message: 'Успешная авторизация' });
     })
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        next(new DataError("Неверные данные"));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {
