@@ -45,13 +45,10 @@ const createUser = (req, res, next) => {
     .then((user) => User.findOne({ _id: user._id }))
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === "MongoError" || err.code === 11000) {
-        next(new ErrorConflict("Пользователь с таким email уже зарегистрирован"));
-        return;
-      }
       if (err.name === 'ValidationError') {
-        next(new DataError(err.message));
-        return;
+        next(new DataError("Неверные данные"));
+      } else if (err.name === "MongoError" || err.code === 11000) {
+        next(new ErrorConflict("Пользователь с таким email уже зарегистрирован"));
       }
       next(err)
     });
