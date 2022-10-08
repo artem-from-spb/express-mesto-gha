@@ -156,7 +156,6 @@ const login = (req, res, next) => {
     .select("+password")
     .then((user) => {
       if (!user) {
-        /// ////////////////////////////////////////
         throw new UnauthorizedError("Пользователь с таки email не загеристрирован");
       }
       return bcrypt.compare(password, user.password)
