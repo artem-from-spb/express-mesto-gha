@@ -42,17 +42,19 @@ const createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
+    .then((user) => User.findOne({ _id: user._id }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "MongoError" || err.code === 11000) {
-        throw new ErrorConflict("Пользователь с таким email уже зарегистрирован");
-      } else next(err);
-    })
-    .then((user) => res.status(201).send({
-      data: {
-        name: user.name, about: user.about, avatar, email: user.email,
-      },
-    }))
-    .catch(next);
+        next(new ErrorConflict("Пользователь с таким email уже зарегистрирован"));
+        return;
+      }
+      if (err.name === 'ValidationError') {
+        next(new DataError(err.message));
+        return;
+      }
+      next(err)
+    });
 };
 
 const getUsers = (req, res, next) => {
