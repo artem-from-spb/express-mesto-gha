@@ -11,7 +11,7 @@ const createCard = (req, res, next) => {
 
   Card.create({ name, link, owner: ownerId })
     .catch(() => {
-      throw new DataError({ message: "Указаны некорректные данные" });
+      throw new DataError("Указаны некорректные данные");
     })
     .then((card) => {
       res.send(card);

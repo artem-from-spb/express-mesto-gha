@@ -171,13 +171,7 @@ const login = (req, res, next) => {
           res.status(200).send({ token });
         });
     })
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        next(new DataError("Неверные данные"));
-      } else {
-        next(err);
-      }
-    });s
+    .catch(next);
 };
 
 module.exports = {
