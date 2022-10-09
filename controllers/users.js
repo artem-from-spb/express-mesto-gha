@@ -51,14 +51,13 @@ const createUser = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new DataError("Неверные данные"));
-      } else if (err.name === "MongoError" || err.code === 11000) {
-        next(new ErrorConflict("Пользователь с таким email уже зарегистрирован"));
-      } else {
-        next(err);
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        next(new DataError('Неверный запрос или данные'));
       }
-
+      if (err.code === 11000) {
+        next(new ErrorConflict('Пользователь с таким email уже существует'));
+      }
+      next(err);
     });
 };
 
