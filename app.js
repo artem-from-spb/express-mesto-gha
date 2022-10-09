@@ -18,7 +18,7 @@ const app = express();
 
 app.use(cookieParser());
 
-app.use(express.json());
+//app.use(express.json());
 
 // Mongoose 6 always behaves as if useNewUrlParser
 // and useCreateIndex are true, and useFindAndModify is false.

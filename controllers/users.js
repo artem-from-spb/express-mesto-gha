@@ -52,7 +52,7 @@ const createUser = (req, res, next) => {
       User.findOne({ _id: user._id });
     })
     .then((user) => {
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
