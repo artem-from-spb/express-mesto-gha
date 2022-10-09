@@ -53,9 +53,9 @@ app.use("/cards", routerCards);
 
 app.use(errors());
 
-app.use(() => {
-  throw new NotFoundError("Запрашиваемый ресурс не найден");
-});
+// app.use((req, res) => {
+//   throw new NotFoundError(`Ошибка 404 req: ${req}, res: ${res}`);
+// });
 
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
