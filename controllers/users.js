@@ -37,17 +37,15 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  console.log(req, res);
+
   bcrypt.hash(password, 10)
     .then((hash) => {
       User.create({
         name, about, avatar, email, password: hash,
       })
-      console.log(req, res);
     })
     .then((user) => {
-      User.findOne({ _id: user._id });
-      console.log(req, res);
+      User.findOne({ _id: user.userId });
     })
     .then((user) => {
       res.send(user);
@@ -57,8 +55,10 @@ const createUser = (req, res, next) => {
         next(new DataError("Неверные данные"));
       } else if (err.name === "MongoError" || err.code === 11000) {
         next(new ErrorConflict("Пользователь с таким email уже зарегистрирован"));
+      } else {
+        next(err);
       }
-      next(err);
+
     });
 };
 
