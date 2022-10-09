@@ -8,7 +8,7 @@ const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
 const auth = require("./middlewares/auth");
 const { createUser, login } = require("./controllers/users");
-const NotFoundError = require("./errors/NotFoundError");
+// const NotFoundError = require("./errors/NotFoundError");
 
 require("dotenv").config();
 
@@ -18,7 +18,7 @@ const app = express();
 
 app.use(cookieParser());
 
-//app.use(express.json());
+// app.use(express.json());
 
 // Mongoose 6 always behaves as if useNewUrlParser
 // and useCreateIndex are true, and useFindAndModify is false.
@@ -36,8 +36,8 @@ app.post("/signin", celebrate({
 
 app.post("/signup", celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).required(),
-    about: Joi.string().min(2).max(30).required(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(
       /https?:\/\/(www\.)?[a-zA-Z\d\-.]{1,}\.[a-z]{1,6}([/a-z0-9\-._~:?#[\]@!$&'()*+,;=]*)/,
     ),

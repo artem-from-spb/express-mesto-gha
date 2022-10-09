@@ -42,7 +42,7 @@ const createUser = (req, res, next) => {
     .then((hash) => {
       User.create({
         name, about, avatar, email, password: hash,
-      })
+      });
     })
     .then((user) => {
       User.findOne({ _id: user._id });
@@ -54,11 +54,11 @@ const createUser = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new DataError('Неверный запрос или данные'));
+      if (err.name === "ValidationError" || err.name === "CastError") {
+        next(new DataError("Неверный запрос или данные"));
       }
       if (err.code === 11000) {
-        next(new ErrorConflict('Пользователь с таким email уже существует'));
+        next(new ErrorConflict("Пользователь с таким email уже существует"));
       }
       next(err);
     });
