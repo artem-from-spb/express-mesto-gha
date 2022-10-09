@@ -56,6 +56,9 @@ app.use(errors());
 // app.use((req, res) => {
 //   throw new NotFoundError(`Ошибка 404 req: ${req}, res: ${res}`);
 // });
+app.use("*", (req, res) => {
+  res.status(404).send({ message: "Ошибка 404" });
+});
 
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500

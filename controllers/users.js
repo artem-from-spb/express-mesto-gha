@@ -37,15 +37,17 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-console.log(req, res);
+  console.log(req, res);
   bcrypt.hash(password, 10)
     .then((hash) => {
       User.create({
         name, about, avatar, email, password: hash,
       })
+      console.log(req, res);
     })
     .then((user) => {
       User.findOne({ _id: user._id });
+      console.log(req, res);
     })
     .then((user) => {
       res.send(user);
