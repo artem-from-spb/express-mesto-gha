@@ -39,20 +39,15 @@ const createUser = (req, res, next) => {
   } = req.body;
 
   bcrypt.hash(password, 10)
-    .then((hash) => {
+    .then((hash) =>
       User.create({
         name, about, avatar, email, password: hash,
-      });
-    })
-    .then((user) => {
-      User.findOne({ _id: user._id });
-    })
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError("Пользователь не найден");
-      }
-      res.send(user);
-    })
+      }))
+    // .then((user) => {
+    //   console.log(user);
+    //   User.findById(user._id);
+    // })
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "ValidationError" || err.name === "CastError") {
         next(new DataError("Неверный запрос или данные"));
