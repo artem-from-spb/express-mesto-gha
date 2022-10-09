@@ -53,26 +53,23 @@ app.use("/cards", routerCards);
 
 app.use(errors());
 
-// app.use((req, res) => {
-//   throw new NotFoundError(`Ошибка 404 req: ${req}, res: ${res}`);
-// });
 app.use("/*", (req, res) => {
   res.status(404).send({ message: "Ошибка 404 из app.js" });
 });
 
-app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
+// app.use((err, req, res, next) => {
+//   // если у ошибки нет статуса, выставляем 500
+//   const { statusCode = 500, message } = err;
 
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? "На сервере произошла ошибка"
-        : message,
-    });
-  next();
-});
+//   res
+//     .status(statusCode)
+//     .send({
+//       // проверяем статус и выставляем сообщение в зависимости от него
+//       message: statusCode === 500
+//         ? "На сервере произошла ошибка"
+//         : message,
+//     });
+//   next();
+// });
 
 app.listen(PORT, () => console.log(PORT));

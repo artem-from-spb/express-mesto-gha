@@ -45,7 +45,11 @@ const createUser = (req, res, next) => {
       })
     })
     .then((user) => {
-      User.findOne({ _id: user.userId });
+      if (!user) {
+        res.status(400).send({ message: "Неверный запрос или данные" });
+        return;
+      }
+      User.findOne({ _id: user._id });
     })
     .then((user) => {
       res.send(user);
