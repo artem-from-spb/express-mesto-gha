@@ -45,14 +45,13 @@ const createUser = (req, res, next) => {
       })
     })
     .then((user) => {
-      if (!user) {
-        res.status(400).send({ message: "Неверный запрос или данные" });
-        return;
-      }
       User.findOne({ _id: user._id });
     })
     .then((user) => {
-      res.status(200).send(user);
+      if (!user) {
+        throw new NotFoundError("Пользователь не найден");
+      }
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
