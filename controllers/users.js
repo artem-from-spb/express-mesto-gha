@@ -13,11 +13,9 @@ const createUser = (req, res, next) => {
   } = req.body;
 
   bcrypt.hash(password, 10)
-    .then((hash) =>
-      User.create({
-        name, about, avatar, email, password: hash,
-      }))
-    // .then((user) => res.send(user))
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => {
       const userNoPassword = user.toObject();
       delete userNoPassword.password;
@@ -25,7 +23,7 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError" || err.name === "CastError") {
-        next(new DataError("Неверный запрос или данные"));
+        next(new DataError("Неверные данные"));
       }
       if (err.code === 11000) {
         next(new ErrorConflict("Пользователь с таким email уже существует"));
