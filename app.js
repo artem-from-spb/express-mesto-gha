@@ -8,7 +8,6 @@ const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
 const auth = require("./middlewares/auth");
 const { createUser, login } = require("./controllers/users");
-// const NotFoundError = require("./errors/NotFoundError");
 
 require("dotenv").config();
 
@@ -17,8 +16,6 @@ const { PORT = 3000 } = process.env;
 const app = express();
 
 app.use(cookieParser());
-
-// app.use(express.json());
 
 // Mongoose 6 always behaves as if useNewUrlParser
 // and useCreateIndex are true, and useFindAndModify is false.
@@ -53,11 +50,8 @@ app.use("/cards", routerCards);
 
 app.use(errors());
 
-// app.use((req, res) => {
-//   throw new NotFoundError(`Ошибка 404 req: ${req}, res: ${res}`);
-// });
 app.use("/*", (req, res) => {
-  res.status(404).send({ message: "Ошибка 404 из app.js" });
+  res.status(404).send({ message: "Ошибка 404" });
 });
 
 app.use((err, req, res, next) => {
