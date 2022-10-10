@@ -1,15 +1,15 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const { celebrate, Joi, errors } = require("celebrate");
-const cookieParser = require("cookie-parser");
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const { celebrate, Joi, errors } = require('celebrate');
+const cookieParser = require('cookie-parser');
 
-const routerUsers = require("./routes/users");
-const routerCards = require("./routes/cards");
-const auth = require("./middlewares/auth");
-const { createUser, login } = require("./controllers/users");
+const routerUsers = require('./routes/users');
+const routerCards = require('./routes/cards');
+const auth = require('./middlewares/auth');
+const { createUser, login } = require('./controllers/users');
 
-require("dotenv").config();
+require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 
@@ -19,19 +19,19 @@ app.use(cookieParser());
 
 // Mongoose 6 always behaves as if useNewUrlParser
 // and useCreateIndex are true, and useFindAndModify is false.
-mongoose.connect("mongodb://localhost:27017/mestodb");
+mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/signin", celebrate({
+app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
 }), login);
 
-app.post("/signup", celebrate({
+app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
@@ -45,13 +45,13 @@ app.post("/signup", celebrate({
 
 app.use(auth);
 
-app.use("/users", routerUsers);
-app.use("/cards", routerCards);
+app.use('/users', routerUsers);
+app.use('/cards', routerCards);
 
 app.use(errors());
 
-app.use("/*", (req, res) => {
-  res.status(404).send({ message: "Ошибка 404" });
+app.use('/*', (req, res) => {
+  res.status(404).send({ message: 'Ошибка 404' });
 });
 
 app.use((err, req, res, next) => {
@@ -63,7 +63,7 @@ app.use((err, req, res, next) => {
     .send({
       // проверяем статус и выставляем сообщение в зависимости от него
       message: statusCode === 500
-        ? "На сервере произошла ошибка"
+        ? 'На сервере произошла ошибка'
         : message,
     });
   next();

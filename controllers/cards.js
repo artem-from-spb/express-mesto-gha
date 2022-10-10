@@ -1,9 +1,9 @@
-const Card = require("../models/card");
-const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require("../errors/ErrorCodes");
+const Card = require('../models/card');
+const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require('../errors/ErrorCodes');
 
-const DataError = require("../errors/DataError");
-const NotFoundError = require("../errors/NotFoundError");
-const ForbiddenError = require("../errors/ForbiddenError");
+const DataError = require('../errors/DataError');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -11,7 +11,7 @@ const createCard = (req, res, next) => {
 
   Card.create({ name, link, owner: ownerId })
     .catch(() => {
-      throw new DataError("Указаны некорректные данные");
+      throw new DataError('Указаны некорректные данные');
     })
     .then((card) => {
       res.send(card);
@@ -25,7 +25,7 @@ const getCards = (req, res) => {
       res.send(list);
     })
     .catch(() => {
-      res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+      res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -33,11 +33,11 @@ const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail()
     .catch(() => {
-      throw new NotFoundError("Нет карточки с таким id");
+      throw new NotFoundError('Нет карточки с таким id');
     })
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
-        throw new ForbiddenError("Недостаточно прав для удаления карточки");
+        throw new ForbiddenError('Недостаточно прав для удаления карточки');
       }
       Card.deleteOne(card).then(() => {
         res.send({ card })
@@ -55,18 +55,18 @@ const setLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
+        res.status(NotFoundErrorStatus).send({ message: 'Карточка не найдена' });
         return;
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         res.status(ValidationErrorStatus).send({
-          message: "Переданы некорректные данные",
+          message: 'Переданы некорректные данные',
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -79,18 +79,18 @@ const removeLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NotFoundErrorStatus).send({ message: "Карточка не найдена" });
+        res.status(NotFoundErrorStatus).send({ message: 'Карточка не найдена' });
         return;
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         res.status(ValidationErrorStatus).send({
-          message: "Переданы некорректные данные",
+          message: 'Переданы некорректные данные',
         });
       } else {
-        res.status(DefaultErrorStatus).send({ message: "Произошла ошибка" });
+        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
       }
     });
 };
