@@ -31,17 +31,15 @@ const getCards = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
-    .orFail()
-    .catch(() => {
-      throw new NotFoundError('Нет карточки с таким id');
-    })
+    .orFail(() => new NotFoundError('Нет карточки с таким id'))
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Недостаточно прав для удаления карточки');
       }
       Card.deleteOne(card).then(() => {
         res.send({ card });
-      });
+      })
+        .catch(next);
     })
     .catch(next);
 };
