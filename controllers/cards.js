@@ -10,23 +10,24 @@ const createCard = (req, res, next) => {
   const ownerId = req.user._id;
 
   Card.create({ name, link, owner: ownerId })
-    .catch(() => {
-      throw new DataError('Указаны некорректные данные');
-    })
     .then((card) => {
       res.send(card);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        next(new DataError('Неверные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((list) => {
       res.send(list);
     })
-    .catch(() => {
-      res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
-    });
+    .catch(next);
 };
 
 const deleteCard = (req, res, next) => {
@@ -40,8 +41,7 @@ const deleteCard = (req, res, next) => {
         throw new ForbiddenError('Недостаточно прав для удаления карточки');
       }
       Card.deleteOne(card).then(() => {
-        res.send({ card })
-          .catch(next);
+        res.send({ card });
       });
     })
     .catch(next);
