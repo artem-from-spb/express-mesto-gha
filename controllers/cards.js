@@ -1,5 +1,4 @@
 const Card = require('../models/card');
-const { DefaultErrorStatus, NotFoundErrorStatus, ValidationErrorStatus } = require('../errors/ErrorCodes');
 
 const DataError = require('../errors/DataError');
 const NotFoundError = require('../errors/NotFoundError');
@@ -47,7 +46,7 @@ const deleteCard = (req, res, next) => {
     .catch(next);
 };
 
-const setLike = (req, res) => {
+const setLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
@@ -55,23 +54,20 @@ const setLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NotFoundErrorStatus).send({ message: 'Карточка не найдена' });
-        return;
+        throw new NotFoundError('Карточка не найдена');
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ValidationErrorStatus).send({
-          message: 'Переданы некорректные данные',
-        });
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        next(new DataError('Неверные данные'));
       } else {
-        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
 
-const removeLike = (req, res) => {
+const removeLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
@@ -79,18 +75,15 @@ const removeLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NotFoundErrorStatus).send({ message: 'Карточка не найдена' });
-        return;
+        throw new NotFoundError('Карточка не найдена');
       }
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ValidationErrorStatus).send({
-          message: 'Переданы некорректные данные',
-        });
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        next(new DataError('Неверные данные'));
       } else {
-        res.status(DefaultErrorStatus).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
