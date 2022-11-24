@@ -1,32 +1,31 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const routerUsers = require("./routes/users");
-const routerCards = require("./routes/cards");
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
+const cookieParser = require('cookie-parser');
+
+const routes = require('./routes/index');
+const defaultErrorHandler = require('./middlewares/defaultErrorHandler');
+
+require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
+app.use(cookieParser());
+
 // Mongoose 6 always behaves as if useNewUrlParser
 // and useCreateIndex are true, and useFindAndModify is false.
-mongoose.connect("mongodb://localhost:27017/mestodb");
+mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "632823b7869e50e118ba06a8",
-  };
+app.use(routes);
 
-  next();
-});
+app.use(errors());
 
-app.use("/users", routerUsers);
-app.use("/cards", routerCards);
+app.use(defaultErrorHandler);
 
-app.use("*", (req, res) => {
-  res.status(404).send({ message: "Ошибка 404" });
-});
-
-app.listen(PORT);
+app.listen(PORT, () => console.log(PORT));
