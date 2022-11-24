@@ -1,13 +1,25 @@
-[![Tests for sprint 13](https://github.com/artem-from-spb/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/artem-from-spb/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests for sprint 14](https://github.com/artem-from-spb/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/artem-from-spb/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
+<h1 align="center">Mesto Russia (Express)<p></p></h1></p>
 
 
-Mesto Russia
+ ## 📝 Содержание
 
-Учебный проект.
+- [О проекте](#about)
+- [Построен с использованием](#built_using)
+- [Ссылка на проект](#link)
 
-Технологии: Node.js, Express, Mongo
 
-Планы по доработке: сделать авторизацию, вынести ошибки в отдельный модуль
+## 🧐 <a name="about">О проекте</a>
 
+Бэкенд приложения Mesto.
+
+## ⛏️ Построен с использованием<a name="built_using"></a>
+
+- Node.js
+- Express
+- MongoDB
+- Mongoose
+
+
+## 🚀 <a name="link">Ссылка на проект</a>
 
 https://artem-from-spb.github.io/express-mesto-gha/
